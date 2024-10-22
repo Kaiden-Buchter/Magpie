@@ -36,6 +36,7 @@ public class Magpie {
     public String getResponse(String statement) {
         statement = statement.trim().toLowerCase();
         String response = "";
+        
         if (statement.length() == 0) {
             response = "Say something, please.";
         } else if (containsInappropriateLanguage(statement)) {
@@ -48,13 +49,17 @@ public class Magpie {
             response = transformIWantToStatement(statement);
         } else if (findKeyword(statement, "i want", 0) >= 0) {
             response = transformIWantStatement(statement);
+        } else if (findKeyword(statement, "hello") >= 0 || findKeyword(statement, "hi") >= 0) {
+            response = "Hello! How can I assist you today?";
+        } else if (findKeyword(statement, "how are you") >= 0) {
+            response = "I'm just a program, but I'm here to help you!";
+        } else if (findKeyword(statement, "weather") >= 0) {
+            response = "I'm not sure about the weather, but I hope it's nice where you are!";
         } else {
-            // Look for a two word (you <something> me) pattern
             int psn = findKeyword(statement, "you", 0);
             if (psn >= 0 && findKeyword(statement, "me", psn) >= 0) {
                 response = transformYouMeStatement(statement);
             } else {
-                // Look for a two word (I <something> you) pattern
                 psn = findKeyword(statement, "i", 0);
                 if (psn >= 0 && findKeyword(statement, "you", psn) >= 0) {
                     response = transformIYouStatement(statement);

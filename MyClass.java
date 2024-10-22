@@ -2,14 +2,22 @@ import java.util.Scanner;
 
 public class MyClass {
     public static void main(String[] args) {
-        Magpie maggie = new Magpie();
-        Scanner in = new Scanner(System.in);
-        System.out.println(maggie.getGreeting());
-        String statement = in.nextLine();
-        while (!statement.equalsIgnoreCase("Bye")) {
-            System.out.println(maggie.getResponse(statement));
-            statement = in.nextLine();
+        Magpie chatbot = new Magpie();
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Bot: " + chatbot.getGreeting());
+
+        while (true) {
+            System.out.print("You: ");
+            String userInput = scanner.nextLine().trim();
+            if (userInput.equalsIgnoreCase("exit")) {
+                System.out.println("Bot: Goodbye!");
+                break;
+            }
+            String response = chatbot.getResponse(userInput);
+            System.out.println("Bot: " + response);
         }
-        in.close();
+
+        scanner.close();
     }
 }
