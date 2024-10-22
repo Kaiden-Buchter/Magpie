@@ -8,6 +8,7 @@ import java.net.URISyntaxException;
 import java.util.Scanner;
 
 public class Magpie {
+    // Array of random responses
     private String[] randomResponses = {
         "Interesting, tell me more",
         "Hmmm.",
@@ -19,10 +20,21 @@ public class Magpie {
         "Could you say that again?"
     };
 
+    /**
+     * Returns the initial greeting message.
+     * 
+     * @return the greeting message
+     */
     public String getGreeting() {
         return "Hello, let's talk.";
     }
 
+    /**
+     * Gives a response to a user statement.
+     * 
+     * @param statement the user statement
+     * @return a response based on the rules given
+     */
     public String getResponse(String statement) {
         statement = statement.trim().toLowerCase();
         String response = "";
@@ -54,6 +66,12 @@ public class Magpie {
         return response;
     }
 
+    /**
+     * Transforms statements of the form "I want to [something]".
+     * 
+     * @param statement the user statement
+     * @return the transformed statement
+     */
     private String transformIWantToStatement(String statement) {
         statement = statement.trim();
         String lastChar = statement.substring(statement.length() - 1);
@@ -65,6 +83,12 @@ public class Magpie {
         return "What would it mean to " + restOfStatement + "?";
     }
 
+    /**
+     * Transforms statements of the form "I want [something]".
+     * 
+     * @param statement the user statement
+     * @return the transformed statement
+     */
     private String transformIWantStatement(String statement) {
         statement = statement.trim();
         String lastChar = statement.substring(statement.length() - 1);
@@ -76,6 +100,12 @@ public class Magpie {
         return "Would you really be happy if you had " + restOfStatement + "?";
     }
 
+    /**
+     * Transforms statements of the form "You [something] me".
+     * 
+     * @param statement the user statement
+     * @return the transformed statement
+     */
     private String transformYouMeStatement(String statement) {
         statement = statement.trim();
         String lastChar = statement.substring(statement.length() - 1);
@@ -88,6 +118,12 @@ public class Magpie {
         return "What makes you think that I " + restOfStatement + " you?";
     }
 
+    /**
+     * Transforms statements of the form "I [something] you".
+     * 
+     * @param statement the user statement
+     * @return the transformed statement
+     */
     private String transformIYouStatement(String statement) {
         statement = statement.trim();
         String lastChar = statement.substring(statement.length() - 1);
@@ -100,6 +136,14 @@ public class Magpie {
         return "Why do you " + restOfStatement + " me?";
     }
 
+    /**
+     * Finds the position of a keyword in a statement starting from a given position.
+     * 
+     * @param statement the user statement
+     * @param goal the keyword to find
+     * @param startPos the position to start the search from
+     * @return the position of the keyword, or -1 if not found
+     */
     private int findKeyword(String statement, String goal, int startPos) {
         String phrase = statement.trim().toLowerCase();
         goal = goal.toLowerCase();
@@ -121,15 +165,33 @@ public class Magpie {
         return -1;
     }
 
+    /**
+     * Overloaded method to find the position of a keyword in a statement starting from the beginning.
+     * 
+     * @param statement the user statement
+     * @param goal the keyword to find
+     * @return the position of the keyword, or -1 if not found
+     */
     private int findKeyword(String statement, String goal) {
         return findKeyword(statement, goal, 0);
     }
 
+    /**
+     * Returns a random response from the array of random responses.
+     * 
+     * @return a random response
+     */
     private String getRandomResponse() {
         Random r = new Random();
         return randomResponses[r.nextInt(randomResponses.length)];
     }
 
+    /**
+     * Checks if the statement contains inappropriate language using an external API.
+     * 
+     * @param statement the user statement
+     * @return true if the statement contains inappropriate language, false otherwise
+     */
     private boolean containsInappropriateLanguage(String statement) {
         try {
             URI uri = new URI("https", "www.purgomalum.com", "/service/containsprofanity", "text=" + statement, null);
@@ -156,6 +218,12 @@ public class Magpie {
         return false;
     }
 
+    /**
+     * Checks if the statement contains any family-related keywords.
+     * 
+     * @param statement the user statement
+     * @return true if the statement contains family-related keywords, false otherwise
+     */
     private boolean containsFamilyKeyword(String statement) {
         String[] familyKeywords = {"mother", "father", "sister", "brother"};
         for (String keyword : familyKeywords) {
@@ -166,6 +234,12 @@ public class Magpie {
         return containsCommonMisspellings(statement);
     }
 
+    /**
+     * Checks if the statement contains common misspellings of family-related keywords using an external API.
+     * 
+     * @param statement the user statement
+     * @return true if the statement contains common misspellings, false otherwise
+     */
     private boolean containsCommonMisspellings(String statement) {
         try {
             URI uri = new URI("https", "api.datamuse.com", "/words", "sl=" + statement, null);
