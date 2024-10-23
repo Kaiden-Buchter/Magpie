@@ -56,18 +56,13 @@ public class Magpie {
         } else if (findKeyword(statement, "weather") >= 0) {
             response = "I'm not sure about the weather, but I hope it's nice where you are!";
         } else {
-            int psn = findKeyword(statement, "you", 0);
-            if (psn >= 0 && findKeyword(statement, "me", psn) >= 0) {
-                response = transformYouMeStatement(statement);
-            } else {
-                psn = findKeyword(statement, "i", 0);
+            int psn = findKeyword(statement, "i", 0);
                 if (psn >= 0 && findKeyword(statement, "you", psn) >= 0) {
                     response = transformIYouStatement(statement);
                 } else {
                     response = getRandomResponse();
                 }
             }
-        }
         return response;
     }
 
@@ -103,24 +98,6 @@ public class Magpie {
         int psn = findKeyword(statement, "i want", 0);
         String restOfStatement = statement.substring(psn + 6).trim();
         return "Would you really be happy if you had " + restOfStatement + "?";
-    }
-
-    /**
-     * Take a statement with "you <something> me" and transform it into 
-     * "What makes you think that I <something> you?"
-     * @param statement the user statement, assumed to contain "you" followed by "me"
-     * @return the transformed statement
-     */
-    private String transformYouMeStatement(String statement) {
-        statement = statement.trim();
-        String lastChar = statement.substring(statement.length() - 1);
-        if (lastChar.equals(".")) {
-            statement = statement.substring(0, statement.length() - 1);
-        }
-        int psnOfYou = findKeyword(statement, "you", 0);
-        int psnOfMe = findKeyword(statement, "me", psnOfYou + 3);
-        String restOfStatement = statement.substring(psnOfYou + 3, psnOfMe).trim();
-        return "What makes you think that I " + restOfStatement + " you?";
     }
 
     /**
@@ -227,7 +204,7 @@ public class Magpie {
     /**
      * Check if the statement contains family-related keywords or common misspellings using an external API.
      * @param statement the user statement
-     * @return true if family-related keywords or common misspellings are found, false otherwise
+     * @return true if family-related keywords, false otherwise
      */
     private boolean containsFamilyKeyword(String statement) {
         String[] familyKeywords = {"mother", "father", "sister", "brother"};
@@ -235,45 +212,6 @@ public class Magpie {
             if (findKeyword(statement, keyword) >= 0) {
                 return true;
             }
-        }
-        return containsCommonMisspellings(statement);
-    }
-
-    /**
-     * Check if the statement contains common misspellings using an external API.
-     * @param statement the user statement
-     * @return true if common misspellings are found, false otherwise
-     */
-    private boolean containsCommonMisspellings(String statement) {
-        try {
-            URI uri = new URI("https", "api.datamuse.com", "/words", "sl=" + statement, null);
-            URL url = uri.toURL();
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
-            conn.connect();
-
-            int responseCode = conn.getResponseCode();
-            if (responseCode != 200) {
-                throw new RuntimeException("HttpResponseCode: " + responseCode);
-            } else {
-                Scanner sc = new Scanner(url.openStream());
-                String inline = "";
-                while (sc.hasNext()) {
-                    inline += sc.nextLine();
-                }
-                sc.close();
-
-                // Manually parse the JSON response
-                String[] words = inline.split("\\},\\{");
-                for (String word : words) {
-                    if (word.contains("\"word\":\"mother\"") || word.contains("\"word\":\"father\"") ||
-                        word.contains("\"word\":\"sister\"") || word.contains("\"word\":\"brother\"")) {
-                        return true;
-                    }
-                }
-            }
-        } catch (IOException | URISyntaxException e) {
-            e.printStackTrace();
         }
         return false;
     }
