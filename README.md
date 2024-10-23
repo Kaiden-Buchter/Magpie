@@ -2,7 +2,5 @@
 
 DONT FORGET TO COMPLIE YOUR FILES
 
-javac MyClass.java
-javac Magpie.java
-
+javac MyClass.java Magpie.java
 java MyClass
