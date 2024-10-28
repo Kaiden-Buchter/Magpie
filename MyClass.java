@@ -1,10 +1,15 @@
 import java.util.Scanner;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class MyClass {
     public static void main(String[] args) {
         Magpie chatbot = new Magpie();
         Scanner scanner = new Scanner(System.in);
 
+        clearScreen();
+        System.out.println("Welcome to Magpie Chatbot!");
+        System.out.println("==========================");
         System.out.println("Magpie: " + chatbot.getGreeting());
 
         while (true) {
@@ -19,5 +24,10 @@ public class MyClass {
         }
 
         scanner.close();
+    }
+
+    private static void clearScreen() {
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
     }
 }
