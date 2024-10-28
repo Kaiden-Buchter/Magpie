@@ -1,11 +1,10 @@
 import java.util.Random;
-import java.util.Arrays;
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Scanner;
+import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URL;
+import java.net.URISyntaxException;
+import java.io.IOException;
 
 public class Magpie {
     private String[] randomResponses = {
@@ -36,7 +35,7 @@ public class Magpie {
     public String getResponse(String statement) {
         statement = statement.trim().toLowerCase();
         String response = "";
-        
+
         if (statement.length() == 0) {
             response = "Say something, please.";
         } else if (containsInappropriateLanguage(statement)) {
@@ -57,12 +56,12 @@ public class Magpie {
             response = "I'm not sure about the weather, but I hope it's nice where you are!";
         } else {
             int psn = findKeyword(statement, "i", 0);
-                if (psn >= 0 && findKeyword(statement, "you", psn) >= 0) {
-                    response = transformIYouStatement(statement);
-                } else {
-                    response = getRandomResponse();
-                }
+            if (psn >= 0 && findKeyword(statement, "you", psn) >= 0) {
+                response = transformIYouStatement(statement);
+            } else {
+                response = getRandomResponse();
             }
+        }
         return response;
     }
 
@@ -74,8 +73,7 @@ public class Magpie {
      */
     private String transformIWantToStatement(String statement) {
         statement = statement.trim();
-        String lastChar = statement.substring(statement.length() - 1);
-        if (lastChar.equals(".")) {
+        if (statement.endsWith(".")) {
             statement = statement.substring(0, statement.length() - 1);
         }
         int psn = findKeyword(statement, "i want to", 0);
@@ -91,8 +89,7 @@ public class Magpie {
      */
     private String transformIWantStatement(String statement) {
         statement = statement.trim();
-        String lastChar = statement.substring(statement.length() - 1);
-        if (lastChar.equals(".")) {
+        if (statement.endsWith(".")) {
             statement = statement.substring(0, statement.length() - 1);
         }
         int psn = findKeyword(statement, "i want", 0);
@@ -108,8 +105,7 @@ public class Magpie {
      */
     private String transformIYouStatement(String statement) {
         statement = statement.trim();
-        String lastChar = statement.substring(statement.length() - 1);
-        if (lastChar.equals(".")) {
+        if (statement.endsWith(".")) {
             statement = statement.substring(0, statement.length() - 1);
         }
         int psnOfI = findKeyword(statement, "i", 0);
@@ -132,6 +128,7 @@ public class Magpie {
         String phrase = statement.trim().toLowerCase();
         goal = goal.toLowerCase();
         int psn = phrase.indexOf(goal, startPos);
+
         while (psn >= 0) {
             String before = " ", after = " ";
             if (psn > 0) {
@@ -202,9 +199,9 @@ public class Magpie {
     }
 
     /**
-     * Check if the statement contains family-related keywords or common misspellings using an external API.
+     * Check if the statement contains family-related keywords or common misspellings.
      * @param statement the user statement
-     * @return true if family-related keywords, false otherwise
+     * @return true if family-related keywords are found, false otherwise
      */
     private boolean containsFamilyKeyword(String statement) {
         String[] familyKeywords = {"mother", "father", "sister", "brother"};
